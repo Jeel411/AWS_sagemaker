@@ -1,7 +1,5 @@
 import csv 
-import os       #used for interaction with OS and to read environmental variables
-#import this below libries act as a safety net, typeddict will add only certain fix keys instead of python allowing all the keys
-#this will give warning at run time for bad spelling, and won't pass wrong data into vector DB
+import os
 from typing import List
 from typing_extensions import TypedDict
 
@@ -15,6 +13,9 @@ from langchain_community.vectorstores import FAISS
 
 from dotenv import load_dotenv
 from langchain.agents import create_agent
+
+from bedrock_agentcore.runtime import BedrockAgentCoreApp
+app = BedrockAgentCoreApp()
 
 load_dotenv()
 
@@ -137,6 +138,20 @@ agent = create_agent(
     system_prompt=system_prompt,
 )
 
+@app.entrypoint
+def agent_invocation(payload, context):
+    """Handler for agent invocation in AgentCore runtime"""
+    print("payload: ", payload)
+    print("Context: ", context)
+
+    #payload is dict
+    query = payload.get("prompt", "No prmopt found in input")
+    result = agent.invoke({"messages": [("human", query)]})
+
+    print("result: ", result)
+
+    return {"result": result['messages'][-1].content}
+
+
 if __name__=="__main__":
-    result = agent.invoke({"messages": [("human", "What is eSIM")]})
-    print(result['messages'][-1].content)
+    app.run()

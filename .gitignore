@@ -1,1 +1,12 @@
 .env
+Dockerfile
+.dockerignore
+
+# Marimo
+marimo/_static/
+marimo/_lsp/
+__marimo__/
+.vscode/
+.idea/
+.bedrock_agentcore/
+.bedrock_agentcore.yaml

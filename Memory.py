@@ -172,7 +172,7 @@ class MemoryMiddleware(AgentMiddleware):
         
         return {"messages": messages}
 
-    # OPTIONAL: Post-model hook to save AI responses
+    # OPTIONAL: Post-model hook to save AI responses for future
     def post_model_hook(state, config: RunnableConfig, *, store: BaseStore):
         """
         Hook that runs after LLM invocation to save AI messages to long-term memory

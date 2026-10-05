@@ -29,7 +29,9 @@ def load_faq_csv(path: str) -> List[Document]:
         for row in reader:
             q = row["question"].strip()     #strip() removes any spaces, tabs
             a = row["answer"].strip()
-            docs.append(Document(page_content=f"Q: {q}\nA: {a}")) #saves formatted string in new document obj
+#saves formatted string in new document obj so that in vector DB it can be stored easily for semantic search with Q and A lable
+#LLMs requires text to be wrapped in document obj data structure to easily track with it's metadata.
+            docs.append(Document(page_content=f"Q: {q}\nA: {a}")) 
         return docs
 
 docs = load_faq_csv("./lauki_qna.csv")
@@ -56,9 +58,9 @@ def search(query: str) -> str:
         return "No relevant FAQs found"
 
 #aa code samjo
-    context = "\n\n----\n\n".join(
-        f"FAQ Entry {i+1}:\n{doc.page_content}"
-        for i, doc in enumerate(results)
+    context = "\n\n----\n\n".join(      #formats it properly while joining
+        f"FAQ Entry {i+1}:\n{doc.page_content}"     #notation for each query
+        for i, doc in enumerate(results)    #iterate over all the results
     )
     return f"Found {len(results)} detailed FAQ entries:\n\n{context}"
 
